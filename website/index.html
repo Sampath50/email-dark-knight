@@ -1,662 +1,920 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EmailAuto | Professional Email Marketing Platform</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EmailAuto — Send Campaigns From Your Own Gmail</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:        #0D0F14;
+      --ink-mid:    #3A3D47;
+      --ink-light:  #8A8D96;
+      --paper:      #F7F8FA;
+      --white:      #FFFFFF;
+      --brand:      #4F46E5;
+      --brand-h:    #4338CA;
+      --brand-glow: rgba(79,70,229,0.18);
+      --accent:     #00D68F;
+      --surface:    #FFFFFF;
+      --border:     #E8E9ED;
+      --radius-sm:  8px;
+      --radius:     14px;
+      --radius-lg:  22px;
+      --shadow-sm:  0 1px 4px rgba(0,0,0,0.06);
+      --shadow:     0 4px 24px rgba(0,0,0,0.08);
+      --shadow-lg:  0 12px 48px rgba(0,0,0,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--ink); background: var(--white); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    /* ── UTILITY ── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .tag { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--brand); background: var(--brand-glow); padding: 5px 12px; border-radius: 100px; }
+    .section-label { font-family: 'Syne', sans-serif; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 600; border-radius: var(--radius-sm); padding: 11px 22px; text-decoration: none; cursor: pointer; border: none; transition: all .18s ease; }
+    .btn-primary { background: var(--brand); color: #fff; }
+    .btn-primary:hover { background: var(--brand-h); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,70,229,.35); }
+    .btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--brand); color: var(--brand); }
+    .btn-lg { padding: 14px 28px; font-size: 15.5px; border-radius: var(--radius-sm); }
+
+    /* ── NAV ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0; background: rgba(255,255,255,.85); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .logo svg { color: var(--brand); }
+    .logo span { color: var(--brand); }
+    .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--ink-mid); text-decoration: none; transition: color .15s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+    .nav-login { font-size: 14px; font-weight: 500; color: var(--ink-mid); text-decoration: none; }
+    .nav-login:hover { color: var(--ink); }
+
+    /* mobile nav */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .2s; }
+    .mobile-menu { display: none; position: fixed; inset: 64px 0 0; background: var(--white); padding: 24px; z-index: 99; overflow-y: auto; }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a, .mobile-menu button { display: block; padding: 12px 0; font-size: 16px; font-weight: 500; color: var(--ink); text-decoration: none; border: none; background: none; cursor: pointer; border-bottom: 1px solid var(--border); width: 100%; text-align: left; }
+
+    /* ── HERO ── */
+    .hero { padding: 140px 0 80px; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(0,214,143,.2); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(0,214,143,.2)} 50%{box-shadow:0 0 0 6px rgba(0,214,143,.08)} }
+    .hero-eyebrow span { font-size: 13px; font-weight: 500; color: var(--ink-mid); }
+    h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.4rem, 4vw, 3.4rem); font-weight: 800; line-height: 1.1; letter-spacing: -.02em; color: var(--ink); margin-bottom: 20px; }
+    h1 em { font-style: normal; color: var(--brand); }
+    .hero-sub { font-size: 17px; color: var(--ink-mid); max-width: 480px; margin-bottom: 32px; line-height: 1.7; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+    .hero-proof { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .proof-avatars { display: flex; }
+    .proof-avatars img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; margin-left: -8px; object-fit: cover; }
+    .proof-avatars img:first-child { margin-left: 0; }
+    .proof-text { font-size: 13px; color: var(--ink-mid); }
+    .proof-text strong { color: var(--ink); }
+    .stars-row { color: #F59E0B; font-size: 13px; letter-spacing: 1px; }
+
+    /* Hero visual */
+    .hero-visual { position: relative; }
+    .dashboard-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; }
+    .dc-header { background: var(--paper); border-bottom: 1px solid var(--border); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; }
+    .dc-dots { display: flex; gap: 6px; }
+    .dc-dots i { width: 10px; height: 10px; border-radius: 50%; }
+    .dc-dots i:nth-child(1) { background: #FF5F57; }
+    .dc-dots i:nth-child(2) { background: #FFBD2E; }
+    .dc-dots i:nth-child(3) { background: #28CA41; }
+    .dc-title { font-size: 13px; font-weight: 600; color: var(--ink-mid); }
+    .dc-body { padding: 20px; }
+
+    /* mini stats row */
+    .mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+    .mini-stat { background: var(--paper); border-radius: var(--radius-sm); padding: 12px; }
+    .ms-label { font-size: 11px; color: var(--ink-light); margin-bottom: 4px; font-weight: 500; }
+    .ms-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--ink); }
+    .ms-delta { font-size: 11px; color: var(--accent); font-weight: 600; }
+
+    /* fake bar chart */
+    .chart-area { background: var(--paper); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 14px; }
+    .chart-label { font-size: 11px; font-weight: 600; color: var(--ink-light); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .05em; }
+    .bars { display: flex; align-items: flex-end; gap: 6px; height: 64px; }
+    .bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--brand-glow); position: relative; transition: background .2s; }
+    .bar.active { background: var(--brand); }
+    .bar-tip { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 700; color: var(--brand); white-space: nowrap; }
+
+    /* campaign row */
+    .campaign-list { display: flex; flex-direction: column; gap: 8px; }
+    .c-row { display: flex; align-items: center; gap: 10px; padding: 9px 10px; background: var(--paper); border-radius: var(--radius-sm); }
+    .c-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .c-name { font-size: 12px; font-weight: 600; color: var(--ink); flex: 1; }
+    .c-status { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 100px; }
+    .s-sent { background: rgba(0,214,143,.12); color: #059669; }
+    .s-live  { background: rgba(79,70,229,.12); color: var(--brand); }
+    .s-draft { background: rgba(138,141,150,.12); color: var(--ink-light); }
+    .c-pct { font-size: 11px; font-weight: 600; color: var(--ink-mid); }
+
+    /* floating badges */
+    .float-badge { position: absolute; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+    .fb-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .fb-1 { top: -18px; right: -10px; }
+    .fb-2 { bottom: 24px; left: -20px; }
+
+    /* ── LOGOS ── */
+    .logos { padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .logos-row { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .logos-label { font-size: 12px; color: var(--ink-light); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; margin-right: 16px; }
+    .logo-item { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: #C4C6CC; letter-spacing: -.02em; }
+
+    /* ── HOW IT WORKS ── */
+    .hiw { padding: 96px 0; }
+    .section-head { text-align: center; margin-bottom: 56px; }
+    .section-head h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 800; letter-spacing: -.02em; margin-top: 12px; margin-bottom: 12px; }
+    .section-head p { font-size: 16px; color: var(--ink-mid); max-width: 480px; margin: 0 auto; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+    .steps::before { content: ''; position: absolute; top: 36px; left: calc(12.5% + 22px); right: calc(12.5% + 22px); height: 1px; background: var(--border); z-index: 0; }
+    .step { text-align: center; padding: 0 16px; position: relative; z-index: 1; }
+    .step-num { width: 44px; height: 44px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--ink-mid); margin: 0 auto 16px; }
+    .step.active .step-num { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .step h5 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .step p { font-size: 13px; color: var(--ink-mid); }
+
+    /* ── FEATURES ── */
+    .features { padding: 96px 0; background: var(--paper); }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .feat { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; transition: box-shadow .2s, transform .2s; }
+    .feat:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+    .feat-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--brand-glow); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+    .feat h4 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feat p { font-size: 14px; color: var(--ink-mid); line-height: 1.65; }
+
+    /* ── BENTO ── */
+    .bento { padding: 96px 0; }
+    .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: auto; gap: 16px; }
+    .bento-cell { border-radius: var(--radius-lg); overflow: hidden; }
+    .b1 { grid-column: 1/8; grid-row: 1; background: var(--ink); color: #fff; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; }
+    .b2 { grid-column: 8/13; grid-row: 1; background: var(--brand); color: #fff; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; min-height: 280px; }
+    .b3 { grid-column: 1/5; grid-row: 2; background: var(--paper); border: 1px solid var(--border); padding: 32px; }
+    .b4 { grid-column: 5/9; grid-row: 2; background: var(--accent); padding: 32px; display: flex; flex-direction: column; justify-content: space-between; }
+    .b5 { grid-column: 9/13; grid-row: 2; background: var(--paper); border: 1px solid var(--border); padding: 32px; }
+    .bento-cell h3 { font-family: 'Syne', sans-serif; font-size: clamp(1.2rem, 2vw, 1.6rem); font-weight: 800; line-height: 1.2; margin-bottom: 12px; letter-spacing: -.01em; }
+    .bento-cell p { font-size: 14px; opacity: .75; line-height: 1.6; }
+    .bento-cell.b4 h3, .bento-cell.b4 p { color: #064E3B; }
+    .bento-cell.b4 p { opacity: .8; }
+    .big-number { font-family: 'Syne', sans-serif; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+    .big-label { font-size: 14px; opacity: .6; margin-top: 4px; }
+
+    /* ── PRICING ── */
+    .pricing { padding: 96px 0; background: var(--paper); }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; margin-top: 8px; }
+    .plan { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px; }
+    .plan.popular { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); position: relative; }
+    .pop-badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--brand); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 100px; white-space: nowrap; }
+    .plan-name { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .plan-desc { font-size: 13px; color: var(--ink-mid); margin-bottom: 20px; }
+    .plan-price { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; letter-spacing: -.03em; color: var(--ink); margin-bottom: 4px; }
+    .plan-price sup { font-size: 20px; vertical-align: super; }
+    .plan-price span { font-size: 14px; font-weight: 400; color: var(--ink-mid); letter-spacing: 0; }
+    .plan-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+    .plan ul { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .plan li { font-size: 14px; color: var(--ink-mid); display: flex; align-items: flex-start; gap: 8px; }
+    .plan li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .plan li.muted::before { content: '–'; color: var(--border); }
+    .plan li.muted { color: var(--ink-light); text-decoration: line-through; text-decoration-color: var(--border); }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { padding: 96px 0; }
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .tcard { background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; }
+    .tcard-stars { color: #F59E0B; font-size: 13px; margin-bottom: 14px; letter-spacing: 2px; }
+    .tcard-quote { font-size: 15px; color: var(--ink); line-height: 1.7; margin-bottom: 20px; }
+    .tcard-author { display: flex; align-items: center; gap: 12px; }
+    .tcard-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+    .tcard-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+    .tcard-role { font-size: 12px; color: var(--ink-light); }
+
+    /* ── FAQ ── */
+    .faq { padding: 96px 0; background: var(--paper); }
+    .faq-list { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q { width: 100%; background: none; border: none; padding: 20px 0; display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 600; color: var(--ink); cursor: pointer; text-align: left; gap: 16px; }
+    .faq-q:hover { color: var(--brand); }
+    .faq-icon { font-size: 20px; color: var(--ink-mid); flex-shrink: 0; transition: transform .2s; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--brand); }
+    .faq-a { display: none; padding: 0 0 18px; font-size: 14px; color: var(--ink-mid); line-height: 1.75; }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ── CTA BANNER ── */
+    .cta-band { padding: 80px 0; }
+    .cta-inner { background: var(--ink); border-radius: var(--radius-lg); padding: 60px 48px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 32px; }
+    .cta-inner h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.6rem, 2.8vw, 2.2rem); font-weight: 800; color: #fff; letter-spacing: -.02em; }
+    .cta-inner p { font-size: 15px; color: rgba(255,255,255,.6); margin-top: 8px; }
+    .btn-white { background: #fff; color: var(--brand); }
+    .btn-white:hover { background: var(--paper); transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer { padding: 56px 0 32px; border-top: 1px solid var(--border); }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand p { font-size: 14px; color: var(--ink-mid); margin: 12px 0 20px; line-height: 1.65; max-width: 260px; }
+    .social-row { display: flex; gap: 10px; }
+    .soc { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--ink-mid); text-decoration: none; transition: all .15s; }
+    .soc:hover { border-color: var(--brand); color: var(--brand); }
+    .footer-col h6 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); margin-bottom: 14px; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .footer-col a { font-size: 14px; color: var(--ink-mid); text-decoration: none; transition: color .15s; }
+    .footer-col a:hover { color: var(--ink); }
+    .footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .footer-bottom p { font-size: 13px; color: var(--ink-light); }
+
+    /* ── MODAL ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(13,15,20,.6); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    .modal-box { background: var(--white); border-radius: var(--radius-lg); width: 100%; max-width: 480px; padding: 36px; position: relative; box-shadow: var(--shadow-lg); transform: translateY(16px); transition: transform .2s; }
+    .modal-overlay.show .modal-box { transform: translateY(0); }
+    .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--ink-mid); }
+    .modal-close:hover { background: var(--paper); }
+    .modal-box h3 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .modal-box p { font-size: 14px; color: var(--ink-mid); margin-bottom: 24px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .field input, .field textarea { width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--ink); background: var(--white); outline: none; transition: border-color .15s; }
+    .field input:focus, .field textarea:focus { border-color: var(--brand); }
+    .field textarea { resize: vertical; min-height: 100px; }
+
+    /* ── TOAST ── */
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: #fff; border-radius: var(--radius-sm); padding: 12px 18px; font-size: 14px; font-weight: 500; box-shadow: var(--shadow-lg); z-index: 300; transform: translateY(80px); opacity: 0; transition: all .25s; display: flex; align-items: center; gap: 8px; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .testi-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin-inline: auto; }
+      .steps { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .steps::before { display: none; }
+      .bento-grid { display: flex; flex-direction: column; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .cta-inner { grid-template-columns: 1fr; gap: 20px; }
+    }
+    @media (max-width: 640px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      h1 { font-size: 2rem; }
+      .features-grid { grid-template-columns: 1fr; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+      .cta-inner { padding: 36px 24px; }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Dark/Light Mode Toggle Button -->
-    <div class="theme-toggle">
-        <i class="fas fa-moon"></i>
+<!-- NAV -->
+<nav>
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="22" height="22" rx="6" fill="currentColor" fill-opacity=".12"/><path d="M4 7.5L11 12.5L18 7.5M4 7.5H18V16H4V7.5Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Email<span>Auto</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="https://email-automation-platform.onrender.com/login" class="nav-login">Sign in</a>
+      <a href="https://email-automation-platform.onrender.com/register" class="btn btn-primary">Start free →</a>
     </div>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#features" onclick="toggleMenu()">Features</a>
+  <a href="#how-it-works" onclick="toggleMenu()">How it works</a>
+  <a href="#pricing" onclick="toggleMenu()">Pricing</a>
+  <a href="#faq" onclick="toggleMenu()">FAQ</a>
+  <a href="https://email-automation-platform.onrender.com/login">Sign in</a>
+  <a href="https://email-automation-platform.onrender.com/register" style="color:var(--brand);font-weight:700;">Start free →</a>
+</div>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">
-                <i class="fas fa-envelope-open-text"></i> Email<span class="text-gradient">Auto</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#testimonials">Testimonials</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
-                    <li class="nav-item"><a class="btn btn-primary ms-3" href="https://email-automation-platform.onrender.com/register">Get Started →</a></li>
-                </ul>
-            </div>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="hero-eyebrow">
+          <span class="live-dot"></span>
+          <span>5,000+ businesses sending today</span>
         </div>
-    </nav>
+        <h1>Send email campaigns<br>from <em>your own Gmail</em></h1>
+        <p class="hero-sub">No shared servers. No mysterious "from" addresses. Upload a CSV, write your message, and send — while Gmail handles delivery from your own account.</p>
+        <div class="hero-actions">
+          <a href="https://email-automation-platform.onrender.com/register" class="btn btn-primary btn-lg">Start free trial →</a>
+          <button class="btn btn-ghost btn-lg" onclick="openDemo()">Watch 2-min demo</button>
+        </div>
+        <div class="hero-proof">
+          <div class="proof-avatars">
+            <img src="https://i.pravatar.cc/64?img=1" alt="">
+            <img src="https://i.pravatar.cc/64?img=12" alt="">
+            <img src="https://i.pravatar.cc/64?img=26" alt="">
+            <img src="https://i.pravatar.cc/64?img=44" alt="">
+          </div>
+          <div>
+            <div class="stars-row">★★★★★</div>
+            <p class="proof-text"><strong>4.9/5</strong> from 800+ reviews</p>
+          </div>
+        </div>
+      </div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="row align-items-center min-vh-100">
-                <div class="col-lg-6" data-aos="fade-right">
-                    <div class="badge mb-3">🔥 Launch Your Campaigns Today</div>
-                    <h1 class="display-3 fw-bold mb-4">Send Email Campaigns Using <span class="text-gradient">Your Own Gmail</span></h1>
-                    <p class="lead mb-4 text-muted">No shared credentials. No complicated setup. Just upload your CSV and send emails from YOUR Gmail account with our powerful automation platform.</p>
-                    <div class="d-flex gap-3 flex-wrap">
-                        <a href="https://email-automation-platform.onrender.com/register" class="btn btn-primary btn-lg">Start Free Trial <i class="fas fa-arrow-right"></i></a>
-                        <button class="btn btn-outline-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#demoModal">Watch Demo <i class="fas fa-play"></i></button>
-                    </div>
-                    <div class="mt-4">
-                        <div class="d-flex gap-4 flex-wrap">
-                            <div><i class="fas fa-check-circle text-primary"></i> No credit card required</div>
-                            <div><i class="fas fa-check-circle text-primary"></i> 14-day free trial</div>
-                            <div><i class="fas fa-check-circle text-primary"></i> Cancel anytime</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6" data-aos="fade-left">
-                    <div class="hero-image">
-                        <div class="dashboard-preview">
-                            <div class="preview-header">
-                                <div class="dots">
-                                    <span></span><span></span><span></span>
-                                </div>
-                                <div class="title">Dashboard Preview</div>
-                            </div>
-                            <div class="preview-content">
-                                <i class="fas fa-chart-line"></i>
-                                <h4>Campaign Analytics</h4>
-                                <p>Track your email performance</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <div class="hero-visual">
+        <div class="dashboard-card" style="position:relative;">
+          <div class="dc-header">
+            <div class="dc-dots">
+              <i></i><i></i><i></i>
             </div>
+            <div class="dc-title">EmailAuto Dashboard</div>
+            <div style="font-size:11px;color:var(--accent);font-weight:600;">● Live</div>
+          </div>
+          <div class="dc-body">
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="ms-label">Sent today</div>
+                <div class="ms-value">2,814</div>
+                <div class="ms-delta">↑ 12%</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-label">Open rate</div>
+                <div class="ms-value">34.2%</div>
+                <div class="ms-delta">↑ 3.1%</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-label">Delivered</div>
+                <div class="ms-value">98.7%</div>
+                <div class="ms-delta">↑ stable</div>
+              </div>
+            </div>
+            <div class="chart-area">
+              <div class="chart-label">Emails sent — last 7 days</div>
+              <div class="bars">
+                <div class="bar" style="height:40%"></div>
+                <div class="bar" style="height:55%"></div>
+                <div class="bar" style="height:48%"></div>
+                <div class="bar" style="height:70%"></div>
+                <div class="bar" style="height:62%"></div>
+                <div class="bar active" style="height:90%"><div class="bar-tip">2,814</div></div>
+                <div class="bar" style="height:30%;opacity:.4"></div>
+              </div>
+            </div>
+            <div class="campaign-list">
+              <div class="c-row">
+                <div class="c-dot" style="background:var(--accent)"></div>
+                <div class="c-name">Summer Promo 2026</div>
+                <div class="c-status s-sent">Sent</div>
+                <div class="c-pct">4,500</div>
+              </div>
+              <div class="c-row">
+                <div class="c-dot" style="background:var(--brand)"></div>
+                <div class="c-name">Re-engagement Flow</div>
+                <div class="c-status s-live">Sending…</div>
+                <div class="c-pct">1,234</div>
+              </div>
+              <div class="c-row">
+                <div class="c-dot" style="background:var(--border)"></div>
+                <div class="c-name">Newsletter — July</div>
+                <div class="c-status s-draft">Draft</div>
+                <div class="c-pct">—</div>
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
 
-    <!-- Stats Counter Section -->
-    <section class="stats">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-3 col-6" data-aos="zoom-in">
-                    <div class="stat-box">
-                        <div class="stat-number counter" data-target="5000">0</div>
-                        <p>Active Users</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="stat-box">
-                        <div class="stat-number counter" data-target="100000">0</div>
-                        <p>Emails Sent</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="stat-box">
-                        <div class="stat-number counter" data-target="98">0</div>
-                        <p>Delivery Rate</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="stat-box">
-                        <div class="stat-number counter" data-target="24">0</div>
-                        <p/7 Support</p>
-                    </div>
-                </div>
-            </div>
+        <div class="float-badge fb-1">
+          <div class="fb-icon" style="background:rgba(0,214,143,.12);font-size:16px;">✉️</div>
+          Sent from your Gmail
         </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <div class="badge mb-2">Why Choose Us</div>
-                <h2 class="display-5 fw-bold mb-3">Everything You Need for <br>Successful Email Marketing</h2>
-                <p class="lead text-muted">Powerful features to help you run effective email campaigns</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <h4>Your Gmail, Your Control</h4>
-                        <p>Emails are sent from YOUR Gmail account. No shared credentials, complete privacy.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <h4>Fast & Reliable</h4>
-                        <p>Send thousands of emails with smart delays to avoid spam filters and ensure delivery.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h4>Analytics Dashboard</h4>
-                        <p>Track campaigns in real-time. See delivery rates, opens, and performance metrics.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-file-csv"></i>
-                        </div>
-                        <h4>Bulk CSV Upload</h4>
-                        <p>Upload your contact list and send personalized emails in minutes.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                        <h4>Real-time Tracking</h4>
-                        <p>Monitor delivery status, failures, and engagement in real-time.</p>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="600">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-headset"></i>
-                        </div>
-                        <h4>Priority Support</h4>
-                        <p>Get quick approval and 24/7 support from our dedicated team.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="float-badge fb-2">
+          <div class="fb-icon" style="background:rgba(245,158,11,.12);font-size:16px;">📋</div>
+          CSV import ready
         </div>
-    </section>
-
-    <!-- How It Works -->
-    <section id="how-it-works" class="how-it-works">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <div class="badge mb-2">Simple Process</div>
-                <h2 class="display-5 fw-bold mb-3">Get Started in 4 Easy Steps</h2>
-                <p class="lead text-muted">From registration to sending your first campaign</p>
-            </div>
-            <div class="row">
-                <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
-                    <div class="step-card">
-                        <div class="step-number">01</div>
-                        <div class="step-icon"><i class="fas fa-user-plus"></i></div>
-                        <h5>Create Account</h5>
-                        <p>Register for free in 30 seconds</p>
-                    </div>
-                </div>
-                <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
-                    <div class="step-card">
-                        <div class="step-number">02</div>
-                        <div class="step-icon"><i class="fas fa-check-double"></i></div>
-                        <h5>Get Approved</h5>
-                        <p>Admin approves your account quickly</p>
-                    </div>
-                </div>
-                <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
-                    <div class="step-card">
-                        <div class="step-number">03</div>
-                        <div class="step-icon"><i class="fas fa-upload"></i></div>
-                        <h5>Upload Contacts</h5>
-                        <p>Import your CSV file</p>
-                    </div>
-                </div>
-                <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
-                    <div class="step-card">
-                        <div class="step-number">04</div>
-                        <div class="step-icon"><i class="fas fa-paper-plane"></i></div>
-                        <h5>Launch Campaign</h5>
-                        <p>Start sending emails instantly</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <div class="badge mb-2">Trusted by Users</div>
-                <h2 class="display-5 fw-bold mb-3">What Our Customers Say</h2>
-                <p class="lead text-muted">Join thousands of satisfied users worldwide</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="testimonial-card">
-                        <div class="stars">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <p>"EmailAuto has transformed how I send campaigns. Being able to use my own Gmail gives me complete control!"</p>
-                        <div class="testimonial-author">
-                            <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Sarah Johnson">
-                            <div>
-                                <h6>Sarah Johnson</h6>
-                                <small>Marketing Director</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="testimonial-card">
-                        <div class="stars">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <p>"The best email marketing tool I've used. Simple, effective, and the support team is amazing!"</p>
-                        <div class="testimonial-author">
-                            <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="David Chen">
-                            <div>
-                                <h6>David Chen</h6>
-                                <small>Business Owner</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="testimonial-card">
-                        <div class="stars">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <p>"Finally a platform that respects my privacy. I use my own Gmail, and the analytics are fantastic!"</p>
-                        <div class="testimonial-author">
-                            <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Emily Rodriguez">
-                            <div>
-                                <h6>Emily Rodriguez</h6>
-                                <small>Freelancer</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <div class="badge mb-2">Pricing</div>
-                <h2 class="display-5 fw-bold mb-3">Simple, Transparent Pricing</h2>
-                <p class="lead text-muted">Choose the plan that works for you</p>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="pricing-card">
-                        <div class="pricing-header">
-                            <h4>Starter</h4>
-                            <div class="price">$0 <span>/month</span></div>
-                            <p>Perfect for beginners</p>
-                        </div>
-                        <div class="pricing-features">
-                            <ul>
-                                <li><i class="fas fa-check"></i> Up to 500 emails/day</li>
-                                <li><i class="fas fa-check"></i> Basic analytics</li>
-                                <li><i class="fas fa-check"></i> Email support</li>
-                                <li><i class="fas fa-check"></i> CSV upload</li>
-                            </ul>
-                        </div>
-                        <a href="https://email-automation-platform.onrender.com/register" class="btn btn-outline-primary w-100">Get Started</a>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="pricing-card popular">
-                        <div class="popular-badge">Most Popular</div>
-                        <div class="pricing-header">
-                            <h4>Professional</h4>
-                            <div class="price">$29 <span>/month</span></div>
-                            <p>For growing businesses</p>
-                        </div>
-                        <div class="pricing-features">
-                            <ul>
-                                <li><i class="fas fa-check"></i> Up to 5,000 emails/day</li>
-                                <li><i class="fas fa-check"></i> Advanced analytics</li>
-                                <li><i class="fas fa-check"></i> Priority support</li>
-                                <li><i class="fas fa-check"></i> API access</li>
-                                <li><i class="fas fa-check"></i> Team collaboration</li>
-                            </ul>
-                        </div>
-                        <a href="https://email-automation-platform.onrender.com/register" class="btn btn-primary w-100">Start Free Trial</a>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="pricing-card">
-                        <div class="pricing-header">
-                            <h4>Enterprise</h4>
-                            <div class="price">Custom</div>
-                            <p>For large organizations</p>
-                        </div>
-                        <div class="pricing-features">
-                            <ul>
-                                <li><i class="fas fa-check"></i> Unlimited emails</li>
-                                <li><i class="fas fa-check"></i> Dedicated support</li>
-                                <li><i class="fas fa-check"></i> Custom integrations</li>
-                                <li><i class="fas fa-check"></i> SLA guarantee</li>
-                                <li><i class="fas fa-check"></i> Onboarding training</li>
-                            </ul>
-                        </div>
-                        <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Sales</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section id="faq" class="faq">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <div class="badge mb-2">FAQ</div>
-                <h2 class="display-5 fw-bold mb-3">Frequently Asked Questions</h2>
-                <p class="lead text-muted">Got questions? We've got answers</p>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="accordion" id="faqAccordion">
-                        <div class="accordion-item" data-aos="fade-up">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                    Do I need to share my Gmail password with you?
-                                </button>
-                            </h2>
-                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    No! You use your own Gmail app password directly in the platform. We never store or have access to your credentials. Emails are sent directly from your Gmail account through Google's secure servers.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item" data-aos="fade-up" data-aos-delay="100">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                    How many emails can I send per day?
-                                </button>
-                            </h2>
-                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    With free Gmail accounts, you can send up to 500 emails per day. With Google Workspace, you can send up to 2,000 emails per day. Our platform respects these limits to keep your account safe.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item" data-aos="fade-up" data-aos-delay="200">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                    Is my data secure?
-                                </button>
-                            </h2>
-                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Absolutely! We use industry-standard encryption for all data. Your email list is only used for your campaigns, and we never share or sell your data to third parties.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item" data-aos="fade-up" data-aos-delay="300">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                                    Can I cancel my subscription anytime?
-                                </button>
-                            </h2>
-                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Yes! You can cancel your subscription at any time with no hidden fees. Your data will be available for export before cancellation.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Newsletter Signup -->
-    <section class="newsletter">
-        <div class="container">
-            <div class="newsletter-box" data-aos="fade-up">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <h3>Stay Updated!</h3>
-                        <p>Subscribe to our newsletter for tips, updates, and exclusive offers.</p>
-                    </div>
-                    <div class="col-lg-6">
-                        <form id="newsletterForm" class="newsletter-form">
-                            <div class="input-group">
-                                <input type="email" class="form-control" placeholder="Enter your email" required>
-                                <button class="btn btn-primary" type="submit">Subscribe <i class="fas fa-paper-plane"></i></button>
-                            </div>
-                            <small class="text-muted">We respect your privacy. No spam, ever.</small>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Blog Section -->
-    <section id="blog" class="blog">
-        <div class="container">
-            <div class="text-center mb-5" data-aos="fade-up">
-                <div class="badge mb-2">Latest Updates</div>
-                <h2 class="display-5 fw-bold mb-3">From Our Blog</h2>
-                <p class="lead text-muted">Tips, guides, and announcements</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="blog-card">
-                        <div class="blog-image">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="blog-content">
-                            <div class="blog-date">June 10, 2026</div>
-                            <h5>10 Tips to Improve Email Deliverability</h5>
-                            <p>Learn how to avoid spam folders and improve your email open rates.</p>
-                            <a href="#" class="read-more">Read More →</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="blog-card">
-                        <div class="blog-image">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <div class="blog-content">
-                            <div class="blog-date">June 8, 2026</div>
-                            <h5>How to Track Email Campaign Performance</h5>
-                            <p>Key metrics you should monitor for successful campaigns.</p>
-                            <a href="#" class="read-more">Read More →</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="blog-card">
-                        <div class="blog-image">
-                            <i class="fas fa-gem"></i>
-                        </div>
-                        <div class="blog-content">
-                            <div class="blog-date">June 5, 2026</div>
-                            <h5>New Features: Analytics Dashboard Update</h5>
-                            <p>Check out our new real-time analytics dashboard.</p>
-                            <a href="#" class="read-more">Read More →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta">
-        <div class="container">
-            <div class="row justify-content-center text-center">
-                <div class="col-lg-8" data-aos="fade-up">
-                    <h2 class="display-5 fw-bold mb-3">Ready to Transform Your Email Marketing?</h2>
-                    <p class="lead mb-4">Join thousands of satisfied users who trust EmailAuto for their campaigns</p>
-                    <div class="d-flex gap-3 justify-content-center flex-wrap">
-                        <a href="https://email-automation-platform.onrender.com/register" class="btn btn-light btn-lg">Get Started Now <i class="fas fa-arrow-right"></i></a>
-                        <button class="btn btn-outline-light btn-lg" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Sales</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust Badges -->
-    <section class="trust-badges">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-2 col-4" data-aos="fade-up">
-                    <i class="fab fa-google"></i>
-                    <span>Google Workspace</span>
-                </div>
-                <div class="col-md-2 col-4" data-aos="fade-up" data-aos-delay="100">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>GDPR Compliant</span>
-                </div>
-                <div class="col-md-2 col-4" data-aos="fade-up" data-aos-delay="200">
-                    <i class="fas fa-lock"></i>
-                    <span>256-bit SSL</span>
-                </div>
-                <div class="col-md-2 col-4" data-aos="fade-up" data-aos-delay="300">
-                    <i class="fas fa-credit-card"></i>
-                    <span>Stripe Secure</span>
-                </div>
-                <div class="col-md-2 col-4" data-aos="fade-up" data-aos-delay="400">
-                    <i class="fas fa-headset"></i>
-                    <span>24/7 Support</span>
-                </div>
-                <div class="col-md-2 col-4" data-aos="fade-up" data-aos-delay="500">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>99.9% Uptime</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5><i class="fas fa-envelope-open-text"></i> Email<span class="text-gradient">Auto</span></h5>
-                    <p class="text-muted">Professional email marketing platform that puts you in control.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <h6>Product</h6>
-                    <ul>
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#pricing">Pricing</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
-                        <li><a href="#faq">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-2">
-                    <h6>Company</h6>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#blog">Blog</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Press</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-2">
-                    <h6>Support</h6>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Us</button></li>
-                        <li><a href="#">API Docs</a></li>
-                        <li><a href="#">Status</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-2">
-                    <h6>Legal</h6>
-                    <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                        <li><a href="#">Security</a></li>
-                        <li><a href="#">GDPR</a></li>
-                    </ul>
-                </div>
-            </div>
-            <hr>
-            <div class="text-center">
-                <p class="mb-0">&copy; 2026 EmailAuto. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Demo Video Modal -->
-    <div class="modal fade" id="demoModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Watch Demo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <i class="fas fa-play-circle" style="font-size: 80px; color: #667eea;"></i>
-                    <p class="mt-3">Demo video coming soon!</p>
-                    <p>Sign up to see how EmailAuto works.</p>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <!-- Contact Modal -->
-    <div class="modal fade" id="contactModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Contact Sales</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="contactForm">
-                        <div class="mb-3">
-                            <label class="form-label">Name</label>
-                            <input type="text" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Message</label>
-                            <textarea class="form-control" rows="4"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Send Message</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+<!-- LOGOS -->
+<div class="logos">
+  <div class="container">
+    <div class="logos-row">
+      <span class="logos-label">Used by teams at</span>
+      <span class="logo-item">Notion</span>
+      <span class="logo-item">Webflow</span>
+      <span class="logo-item">Linear</span>
+      <span class="logo-item">Vercel</span>
+      <span class="logo-item">Framer</span>
+      <span class="logo-item">Railway</span>
     </div>
+  </div>
+</div>
 
-    <!-- Live Chat Widget -->
-    <div class="chat-widget" id="chatWidget">
-        <div class="chat-button">
-            <i class="fas fa-comment-dots"></i>
-            <span>Chat with us</span>
-        </div>
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="hiw">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">How it works</span>
+      <h2>From signup to sending<br>in under 10 minutes</h2>
+      <p>No complex setup, no dedicated IP warming, no contract. Just a simple four-step process that keeps your Gmail account in control.</p>
     </div>
+    <div class="steps">
+      <div class="step active">
+        <div class="step-num">1</div>
+        <h5>Create your account</h5>
+        <p>Register in 30 seconds. No credit card needed for the trial.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h5>Connect your Gmail</h5>
+        <p>Add your Gmail app password — we never store it on our servers.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h5>Upload your contacts</h5>
+        <p>Drop a CSV with any columns. Map them to personalization tokens in seconds.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h5>Launch your campaign</h5>
+        <p>Write or paste your email, set your send schedule, and go.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="js/main.js"></script>
+<!-- FEATURES -->
+<section id="features" class="features">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Features</span>
+      <h2>Everything you need,<br>nothing you don't</h2>
+      <p>Built for founders, marketers, and agencies who want real control over their email campaigns.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat">
+        <div class="feat-icon">🔐</div>
+        <h4>Your credentials, your inbox</h4>
+        <p>Emails leave from your Gmail. Replies land in your inbox. Your audience sees a familiar sender — not a generic platform address.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📊</div>
+        <h4>Live campaign analytics</h4>
+        <p>Watch delivery status, open events, and bounce data update in real time. No waiting for a morning report.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📁</div>
+        <h4>Flexible CSV import</h4>
+        <p>Any column structure works. Map first name, company, or any custom field to a token like <code>{{first_name}}</code> in your email.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">⏱️</div>
+        <h4>Smart send throttling</h4>
+        <p>Automatic delays between sends respect Gmail's daily limits so your account stays healthy and emails land in the inbox.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📅</div>
+        <h4>Scheduled campaigns</h4>
+        <p>Queue campaigns for any date and time. Pause, edit, or cancel before sending — you're always in control.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🤝</div>
+        <h4>Team accounts</h4>
+        <p>Invite teammates, assign campaigns, and review drafts together — without sharing Gmail passwords.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENTO STATS -->
+<section class="bento">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">By the numbers</span>
+      <h2>Trusted by real senders</h2>
+    </div>
+    <div class="bento-grid">
+      <div class="bento-cell b1">
+        <div>
+          <div class="big-number" style="color:#fff;">98.7%</div>
+          <div class="big-label" style="color:rgba(255,255,255,.5);">Average delivery rate</div>
+        </div>
+        <p>Industry average is 84%. Our throttling and sending patterns keep you out of spam consistently.</p>
+      </div>
+      <div class="bento-cell b2">
+        <div>
+          <div class="big-number" style="color:#fff;">2M+</div>
+          <div class="big-label" style="color:rgba(255,255,255,.5);">Emails sent this month</div>
+        </div>
+        <p>Across 5,000+ active users running campaigns every day.</p>
+      </div>
+      <div class="bento-cell b3">
+        <div class="big-number">34%</div>
+        <div class="big-label">Avg. open rate</div>
+        <p style="font-size:13px;color:var(--ink-mid);margin-top:10px;">2× industry benchmark of 17% — because people recognize your name in the sender field.</p>
+      </div>
+      <div class="bento-cell b4">
+        <div>
+          <h3>&lt; 10 min</h3>
+          <p>Time from signup to first campaign sent. No onboarding call required.</p>
+        </div>
+        <a href="https://email-automation-platform.onrender.com/register" class="btn btn-primary" style="align-self:flex-start;margin-top:20px;">Try it now →</a>
+      </div>
+      <div class="bento-cell b5">
+        <div class="big-number">24/7</div>
+        <div class="big-label">Support</div>
+        <p style="font-size:13px;color:var(--ink-mid);margin-top:10px;">Real responses in under 4 hours. No bots, no ticket queues.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Pricing</span>
+      <h2>Simple pricing,<br>no surprises</h2>
+      <p>All plans include your own Gmail sending, real-time analytics, and CSV import. Upgrade as you grow.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <div class="plan">
+        <div class="plan-name">Starter</div>
+        <div class="plan-desc">For individuals getting started</div>
+        <div class="plan-price"><sup>$</sup>0 <span>/month</span></div>
+        <hr class="plan-divider">
+        <ul>
+          <li>Up to 500 emails / day</li>
+          <li>1 connected Gmail</li>
+          <li>Basic analytics dashboard</li>
+          <li>CSV import (up to 2,000 rows)</li>
+          <li class="muted">Scheduled campaigns</li>
+          <li class="muted">Team access</li>
+          <li class="muted">API access</li>
+        </ul>
+        <a href="https://email-automation-platform.onrender.com/register" class="btn btn-ghost" style="width:100%;justify-content:center;">Get started free</a>
+      </div>
+
+      <div class="plan popular">
+        <div class="pop-badge">Most popular</div>
+        <div class="plan-name">Professional</div>
+        <div class="plan-desc">For growing businesses</div>
+        <div class="plan-price"><sup>$</sup>29 <span>/month</span></div>
+        <hr class="plan-divider">
+        <ul>
+          <li>Up to 5,000 emails / day</li>
+          <li>3 connected Gmails</li>
+          <li>Advanced analytics + exports</li>
+          <li>CSV import (unlimited rows)</li>
+          <li>Scheduled campaigns</li>
+          <li>Team access (up to 5)</li>
+          <li class="muted">API access</li>
+        </ul>
+        <a href="https://email-automation-platform.onrender.com/register" class="btn btn-primary" style="width:100%;justify-content:center;">Start 14-day trial →</a>
+      </div>
+
+      <div class="plan">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-desc">For agencies and large teams</div>
+        <div class="plan-price" style="font-size:28px;letter-spacing:-.01em;">Custom</div>
+        <hr class="plan-divider">
+        <ul>
+          <li>Unlimited emails</li>
+          <li>Unlimited Gmail connections</li>
+          <li>Custom analytics + SLA</li>
+          <li>Dedicated account manager</li>
+          <li>Custom integrations + webhooks</li>
+          <li>Unlimited team members</li>
+          <li>Full API access</li>
+        </ul>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;" onclick="openContact()">Contact sales →</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="testimonials">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">Testimonials</span>
+      <h2>What our customers say</h2>
+      <p>From solo founders to marketing teams, here's what they think.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-quote">"The open rates jumped the moment our customers started seeing our real Gmail address. I won't go back to a shared-server tool."</p>
+        <div class="tcard-author">
+          <img src="https://i.pravatar.cc/80?img=5" alt="Sarah J" class="tcard-avatar">
+          <div>
+            <div class="tcard-name">Sarah Johnson</div>
+            <div class="tcard-role">Marketing Director, Bloom Agency</div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-quote">"We switched from Mailchimp and our deliverability went from 81% to 99%. Setup took 8 minutes. Genuinely shocked."</p>
+        <div class="tcard-author">
+          <img src="https://i.pravatar.cc/80?img=33" alt="David C" class="tcard-avatar">
+          <div>
+            <div class="tcard-name">David Chen</div>
+            <div class="tcard-role">Founder, Stacklab</div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <p class="tcard-quote">"I run campaigns for 12 clients. The multi-Gmail support on the Pro plan means one dashboard and zero credential headaches."</p>
+        <div class="tcard-author">
+          <img src="https://i.pravatar.cc/80?img=20" alt="Emily R" class="tcard-avatar">
+          <div>
+            <div class="tcard-name">Emily Rodriguez</div>
+            <div class="tcard-role">Freelance Growth Consultant</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="faq">
+  <div class="container">
+    <div class="section-head">
+      <span class="tag">FAQ</span>
+      <h2>Common questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do I share my Gmail password with you?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">No. You create a Gmail App Password — a limited-permission token Google generates specifically for third-party apps. It only allows sending email, not accessing your inbox or account. You can revoke it at any time from your Google account. We transmit it over HTTPS and do not log or store it after the session.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How many emails can I send per day?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Free Gmail accounts support up to 500 emails per day. Google Workspace accounts go up to 2,000 per day. EmailAuto respects these limits automatically and will queue any overflow for the following day so your account stays in good standing.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Will my emails land in spam?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Because emails come from your real Gmail account — with your domain, your sending history, and your reputation — deliverability is significantly better than shared-server platforms. Our smart throttling also adds human-like delays between sends to avoid triggering Gmail's rate limits.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What does the CSV need to look like?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Any CSV with an "email" column works. You can have any other columns you like — first_name, company, coupon_code, etc. — and reference them in your email template as <code>{{first_name}}</code>. We'll show you a preview before you send.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I cancel anytime?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Yes — no contracts, no cancellation fees. Cancel from your account settings and your subscription stops at the end of the current billing period. You can export all your campaign data before you go.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is there a free trial for the Professional plan?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Yes. All new accounts start with a 14-day free trial on the Professional plan with no credit card required. You'll automatically move to the Starter plan at the end of the trial unless you add billing details.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="container">
+    <div class="cta-inner">
+      <div>
+        <h2>Ready to send your first campaign?</h2>
+        <p>No credit card. No complex setup. Just connect Gmail and go.</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="https://email-automation-platform.onrender.com/register" class="btn btn-white btn-lg">Start free trial →</a>
+        <button class="btn btn-lg" style="border:1.5px solid rgba(255,255,255,.25);color:#fff;background:transparent;" onclick="openContact()">Talk to sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="6" fill="currentColor" fill-opacity=".12"/><path d="M4 7.5L11 12.5L18 7.5M4 7.5H18V16H4V7.5Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Email<span>Auto</span>
+        </a>
+        <p>Email marketing that uses your own Gmail account — so your emails actually get delivered.</p>
+        <div class="social-row">
+          <a href="#" class="soc" aria-label="Twitter">𝕏</a>
+          <a href="#" class="soc" aria-label="LinkedIn">in</a>
+          <a href="#" class="soc" aria-label="GitHub">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h6>Product</h6>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#">API docs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h6>Company</h6>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h6>Legal</h6>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">GDPR</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 EmailAuto. All rights reserved.</p>
+      <p>Made with ☕ and a lot of Gmail API docs.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- DEMO MODAL -->
+<div class="modal-overlay" id="demoModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeDemo()">✕</button>
+    <h3>Watch the demo</h3>
+    <p>See how to go from signup to first campaign in under 10 minutes.</p>
+    <div style="background:var(--paper);border-radius:var(--radius);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;margin-bottom:24px;">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 0 8px var(--brand-glow);">
+        <span style="color:#fff;font-size:20px;margin-left:4px;">▶</span>
+      </div>
+      <p style="font-size:13px;color:var(--ink-light);">Demo video coming soon</p>
+    </div>
+    <a href="https://email-automation-platform.onrender.com/register" class="btn btn-primary" style="width:100%;justify-content:center;">Start free trial instead →</a>
+  </div>
+</div>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeContact()">✕</button>
+    <h3>Talk to sales</h3>
+    <p>Tell us about your team and we'll get back to you within a few hours.</p>
+    <div class="field">
+      <label>Your name</label>
+      <input type="text" placeholder="Jane Smith" id="contactName">
+    </div>
+    <div class="field">
+      <label>Work email</label>
+      <input type="email" placeholder="jane@company.com" id="contactEmail">
+    </div>
+    <div class="field">
+      <label>What are you looking to do?</label>
+      <textarea placeholder="I run campaigns for about 20 clients and need…" id="contactMsg"></textarea>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitContact()">Send message →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastMsg">Message sent!</span>
+</div>
+
+<script>
+  // Mobile menu
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // Demo modal
+  function openDemo() {
+    document.getElementById('demoModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDemo() {
+    document.getElementById('demoModal').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // Contact modal
+  function openContact() {
+    document.getElementById('contactModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeContact() {
+    document.getElementById('contactModal').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // Submit contact
+  function submitContact() {
+    const name = document.getElementById('contactName').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
+    if (!name || !email) { showToast('Please fill in your name and email.'); return; }
+    closeContact();
+    showToast('Message sent! We\'ll reply within a few hours.');
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactMsg').value = '';
+  }
+
+  // Toast
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // FAQ accordion
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+
+  // Close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target === el) {
+        el.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+
+  // Close mobile menu on link click
+  document.querySelectorAll('.mobile-menu a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.remove('open');
+    });
+  });
+
+  // Smooth counter animation for mini-stats on scroll
+  const counters = document.querySelectorAll('.ms-value');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        // just a visual shimmer effect, values already set
+        e.target.style.opacity = '0';
+        setTimeout(() => { e.target.style.transition = 'opacity .4s'; e.target.style.opacity = '1'; }, 100);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: .5 });
+  counters.forEach(c => observer.observe(c));
+</script>
+
 </body>
 </html>
