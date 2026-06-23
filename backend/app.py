@@ -6,7 +6,7 @@ import sys
 import os
 import io
 import csv
-import tempfile  # ✅ ADDED for Vercel compatibility
+import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,15 +27,13 @@ app = Flask(__name__,
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key')
 
-# ============= FIX FOR VERCEL (Read-only file system) =============
-# Use /tmp for uploads and database on Vercel
+# ============= FIX FOR RENDER (Read-only file system) =============
 TEMP_DIR = tempfile.gettempdir()
 UPLOAD_FOLDER = os.path.join(TEMP_DIR, 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # ============= DATABASE CONFIGURATION =============
-# Use /tmp for SQLite database on Vercel
 database_url = f'sqlite:///{os.path.join(TEMP_DIR, "email_system.db")}'
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -57,7 +55,6 @@ with app.app_context():
     db.create_all()
     print("✅ Database tables ready")
     
-    # Create admin if doesn't exist
     admin = User.query.filter_by(username='admin').first()
     if not admin:
         admin = User(
@@ -73,21 +70,24 @@ with app.app_context():
     else:
         print("✅ Admin user already exists")
 
-# ============= STATIC FILE SERVING =============
+# ============= STATIC FILE SERVING (FIXED FOR RENDER) =============
 @app.route('/css/<path:filename>')
 def serve_css(filename):
     """Serve CSS files from website/css folder"""
-    return send_from_directory('../website/css', filename)
+    css_path = os.path.join(os.path.dirname(__file__), '../website/css')
+    return send_from_directory(css_path, filename)
 
 @app.route('/js/<path:filename>')
 def serve_js(filename):
     """Serve JavaScript files from website/js folder"""
-    return send_from_directory('../website/js', filename)
+    js_path = os.path.join(os.path.dirname(__file__), '../website/js')
+    return send_from_directory(js_path, filename)
 
 @app.route('/images/<path:filename>')
 def serve_images(filename):
     """Serve image files from website/images folder"""
-    return send_from_directory('../website/images', filename)
+    images_path = os.path.join(os.path.dirname(__file__), '../website/images')
+    return send_from_directory(images_path, filename)
 
 # ============= PUBLIC ROUTES =============
 @app.route('/')
@@ -418,4 +418,7 @@ def setup():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    
+    # Get port from environment variable (Render sets this)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
