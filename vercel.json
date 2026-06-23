@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "backend/app.py"
+    }
+  ],
+  "env": {
+    "SECRET_KEY": "your-secret-key-here",
+    "SMTP_SERVER": "smtp.gmail.com",
+    "SMTP_PORT": "587",
+    "EMAIL_ADDRESS": "csampath.src@gmail.com",
+    "EMAIL_PASSWORD": "sfiz dbjc gdlp ewig"
+  }
+}

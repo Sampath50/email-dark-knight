@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EmailAuto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: 'Inter', sans-serif;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+        }
+        .navbar-brand i {
+            margin-right: 10px;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+        }
+        .nav-link:hover {
+            color: white !important;
+        }
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .dashboard-card h4 {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .stat-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .stat-box h3 {
+            color: #667eea;
+            font-weight: 700;
+        }
+        .stat-box p {
+            color: #666;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-envelope-open-text"></i> EmailAuto
+            </a>
+            <div class="ms-auto">
+                <span class="text-white me-3">Welcome, {{ current_user.username }}</span>
+                <a href="{{ url_for('logout') }}" class="btn btn-light btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h3>{{ campaigns|length if campaigns else 0 }}</h3>
+                    <p>Total Campaigns</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h3>{{ total_emails_sent|default(0) }}</h3>
+                    <p>Emails Sent</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h3>{{ pending_approval|default(0) }}</h3>
+                    <p>Pending Approval</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-box">
+                    <h3>{{ delivery_rate|default(0) }}%</h3>
+                    <p>Delivery Rate</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="dashboard-card">
+                    <h4><i class="fas fa-paper-plane"></i> Send New Campaign</h4>
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label">Sender Email</label>
+                            <input type="email" name="sender_email" class="form-control" placeholder="your-email@gmail.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Sender Password (App Password)</label>
+                            <input type="password" name="sender_password" class="form-control" placeholder="Your Gmail App Password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Subject</label>
+                            <input type="text" name="subject" class="form-control" placeholder="Campaign subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email Body</label>
+                            <textarea name="email_body" class="form-control" rows="5" placeholder="Write your email content here..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload CSV (with 'email' column)</label>
+                            <input type="file" name="csv_file" class="form-control" accept=".csv" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Launch Campaign</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <h4><i class="fas fa-history"></i> Quick Actions</h4>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('campaign_logs') }}" class="btn btn-outline-primary">View Campaign Logs</a>
+                        <button class="btn btn-outline-secondary" onclick="window.location.reload()">Refresh Dashboard</button>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
